@@ -3,25 +3,29 @@ package com.example.financeapp.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
+import java.math.BigDecimal;
+
 @Entity
-@Table (name = "stock_prices", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"ticker", "priceDateTS"})
-})
+@Table (name = "stock_prices",
+        uniqueConstraints = { @UniqueConstraint(columnNames = {"ticker", "priceDateTS"})},
+        indexes = { @Index(name = "idx_ticker", columnList = "ticker") }
+)
 public class StockPrice {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "ticker", nullable=false)
+    @Column(nullable=false)
     @NotBlank(message = "ticker is required")
     private String ticker;
 
-    @Column(name = "price", nullable=false)
-    @NotBlank(message = "Price is required")
-    private String price;
+    @NotNull(message = "Price is required")
+    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
+    @Column(nullable = false)
+    private BigDecimal price;
 
-    @Column(name = "priceDateTS", nullable=false)
+    @Column(nullable=false)
     @NotNull(message = "Price date is required")
     private Long priceDateTS;
 
@@ -31,7 +35,7 @@ public class StockPrice {
         return ticker;
     }
 
-    public String getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
@@ -41,7 +45,7 @@ public class StockPrice {
         this.ticker = ticker;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

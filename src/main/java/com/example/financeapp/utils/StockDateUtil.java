@@ -3,7 +3,7 @@ import java.time.*;
 import java.text.SimpleDateFormat;
 
 public class StockDateUtil {
-    public static long getLastWorkdayTS() {
+    public static LocalDate getLastWorkday() {
         LocalDate utcToday = LocalDate.now(ZoneOffset.UTC);
         LocalDate date = utcToday.minusDays(1); // start from "yesterday" in UTC
 
@@ -11,13 +11,11 @@ public class StockDateUtil {
             date = date.minusDays(1);
         }
 
-        // Convert to timestamp (00:00:00 UTC)
-        ZonedDateTime startDayUtc = date.atStartOfDay(ZoneOffset.UTC);
-        return startDayUtc.toEpochSecond();
+        return date;
     }
 
     public static int getNumberOfWorkdays(int days) {
-        int numberOfWorkdays = 1;
+        int numberOfWorkdays = -1;
         LocalDate date = LocalDate.now(ZoneOffset.UTC);
 
         while (days > 0) {
