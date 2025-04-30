@@ -56,10 +56,12 @@ public class StockPriceServiceTest {
         when(stockPriceRepository.getLastPrice(eq(ticker), anyLong())).thenReturn(mockPrice);
 
         Map<String, Object> result = stockPriceService.getLastPrice(ticker);
+        Map<String, Object> data = (Map<String, Object>) result.get("data");
 
-        assertEquals(ticker, result.get("ticker"));
-        assertEquals(new BigDecimal("123.45"), result.get("price"));
-        assertEquals("database", result.get("source"));
+        assertEquals("Stock price data fetched successfully.", result.get("message"));
+        assertEquals(ticker, data.get("ticker"));
+        assertEquals(new BigDecimal("123.45"), data.get("price"));
+        assertEquals("database", data.get("source"));
     }
 
     @Test
@@ -81,8 +83,12 @@ public class StockPriceServiceTest {
         when(stockPriceRepository.getHistoryPrice(eq(ticker), anyLong())).thenReturn(mockData);
 
         Map<String, Object> result = stockPriceService.getHistory(ticker);
+        Map<String, Object> data = (Map<String, Object>) result.get("data");
 
-        assertEquals("database", result.get("source"));
-        assertTrue(((List<?>) result.get("data")).size() >= 22);
+        assertEquals("Stock price data fetched successfully.", result.get("message"));
+        assertEquals("database", data.get("source"));
+        assertEquals(ticker, data.get("ticker"));
+        List<Map<String, Object>> prices = (List<Map<String, Object>>) data.get("prices");
+        assertTrue(prices.size() >= 22);
     }
 }

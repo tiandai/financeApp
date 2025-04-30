@@ -36,6 +36,7 @@ public class StockPriceService {
     private final ObjectMapper mapper = new ObjectMapper();
 
     public Map<String, Object> getLastPrice(String param) throws Exception {
+        Map<String, Object> responseBody = new HashMap<>();
         Map<String, Object> responseData = new HashMap<>();
 
         String ticker = InputUtil.sanitize(param);
@@ -56,7 +57,10 @@ public class StockPriceService {
             responseData.put("price", stockPrice.getPrice());
             responseData.put("date", StockDateUtil.getReadableDateUtc(stockPrice.getPriceDateTS()));
             responseData.put("source", "database");
-            return responseData;
+
+            responseBody.put("data", responseData);
+            responseBody.put("message", "Stock price data fetched successfully.");
+            return responseBody;
         }
 
         // otherwise fetch it from external API
@@ -85,10 +89,14 @@ public class StockPriceService {
         responseData.put("price", new BigDecimal(rmPrice));
         responseData.put("date", StockDateUtil.getReadableDateUtc(stockDateTS));
         responseData.put("source", "Yahoo Finance");
-        return responseData;
+
+        responseBody.put("data", responseData);
+        responseBody.put("message", "Stock price data fetched successfully.");
+        return responseBody;
     }
 
     public Map<String, Object> getHistory(String param) throws Exception {
+        Map<String, Object> responseBody = new HashMap<>();
         Map<String, Object> responseData = new HashMap<>();
 
         String ticker = InputUtil.sanitize(param);
@@ -107,8 +115,11 @@ public class StockPriceService {
         if (history.size() >= numOfWDays) {
             List<Map<String, Object>> historyData = formatHistoryData(history);
             responseData.put("source", "database");
-            responseData.put("data", historyData);
-            return responseData;
+            responseData.put("prices", historyData);
+
+            responseBody.put("data", responseData);
+            responseBody.put("message", "Stock price data fetched successfully.");
+            return responseBody;
         }
 
         String url = "https://query2.finance.yahoo.com/v8/finance/chart/" + ticker + "?range=1mo&interval=1d";
@@ -147,8 +158,11 @@ public class StockPriceService {
         }
 
         responseData.put("source", "Yahoo Finance");
-        responseData.put("data", results);
-        return responseData;
+        responseData.put("prices", results);
+
+        responseBody.put("data", responseData);
+        responseBody.put("message", "Stock price data fetched successfully.");
+        return responseBody;
     }
 
     private HttpEntity<String> buildHttpEntity() {

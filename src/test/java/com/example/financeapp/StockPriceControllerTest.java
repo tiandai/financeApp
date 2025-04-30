@@ -57,7 +57,7 @@ public class StockPriceControllerTest {
 		ResponseEntity<Map<String, Object>> response = stockPriceController.getLastPrice(ticker);
 
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-		assertEquals("invalid ticker", response.getBody().get("error"));
+		assertEquals("invalid ticker", response.getBody().get("message"));
 	}
 
 	@Test
@@ -85,6 +85,6 @@ public class StockPriceControllerTest {
 		ResponseEntity<Map<String, Object>> response = stockPriceController.getHistory(ticker);
 
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-		assertEquals("invalid ticker", response.getBody().get("error"));
+		assertEquals("invalid ticker", response.getBody().get("message"));
 	}
 }

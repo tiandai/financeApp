@@ -81,7 +81,7 @@ kind: Deployment
 metadata:
   name: financeapp
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: financeapp
@@ -125,8 +125,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: financeapp
-  minReplicas: 1
-  maxReplicas: 5
+  minReplicas: 2
+  maxReplicas: 4
   metrics:
     - type: Resource
       resource:
